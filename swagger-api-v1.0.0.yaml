@@ -1096,7 +1096,7 @@ definitions:
       orders:
         type: "array"
         items:
-          $ref: ""
+          $ref: "#/definitions/WelfareOrderSimpleVO"
         description: "订单信息"
   WelfareOrderSimpleVO:
     type: "object"
