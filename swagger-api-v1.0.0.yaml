@@ -4,7 +4,7 @@ info:
   version: "1.0.0"
   title: "抖音小程序开发 - 服务端接口文档"
 host: "http://47.103.115.210:8090"
-basePath: "/dm/douyin.99fuliyun.com/",
+basePath: "/dm/douyin.99fuliyun.com/"
 tags:
 - name: "登录"
   description: "登陆功能参考抖音文档开发完成"
