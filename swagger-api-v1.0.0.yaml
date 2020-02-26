@@ -1,9 +1,9 @@
 swagger: "2.0"
 info:
-  description: "该api文档适用于开发抖音小程序，此文档中只包含服务端api部分，不涉及到任何小程序与抖音app交互的内容"
+  description: "该api文档适用于开发抖音小程序，此文档中只包含服务端api部分，不涉及到任何小程序与抖音app交互的内容，测试环境：http://47.103.115.210:8090/dm/douyin.99fuliyun.com/"
   version: "1.0.0"
   title: "抖音小程序开发 - 服务端接口文档"
-  termsOfService: "http://swagger.io/terms/"
+  termsOfService: "http://47.103.115.210:8090/dm/douyin.99fuliyun.com/"
   contact:
     email: "kang.wu@ecminsheng.com"
 host: "petstore.swagger.io"
