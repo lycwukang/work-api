@@ -963,27 +963,26 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/WelfareConfirmItemVO"
-          definitions: "下单商品"
+        description: "下单商品"
       receiver:
         $ref: "#/definitions/WelfareConfirmReceiverVO"
-        definitions: "收货地址，当用户没有填写收货地址时，返回空"
       price:
         type: "number"
         format: "double"
-        definitions: "商品总价"
+        description: "商品总价"
       fee:
         type: "number"
         format: "double"
-        definitions: "运费"
+        description: "运费"
       amount:
         type: "number"
         format: "double"
-        definitions: "结算金额（price + fee）"
+        description: "结算金额（price + fee）"
       messages:
         type: "array"
         items:
           $ref: "#/definitions/WelfareConfirmMessageVO"
-          definitions: "提示信息"
+        description: "提示信息"
       submit:
         type: "boolean"
         description: "是否可以进行下单，如果不可下单，通常是由于不满足某些下单条件（没有库存，商品下架，区域不可配送等）"
