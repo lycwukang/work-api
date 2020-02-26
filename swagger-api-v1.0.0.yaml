@@ -18,8 +18,8 @@ tags:
 - name: "订单"
   description: ""
 schemes:
-- "https"
 - "http"
+- "https"
 paths:
   /api/sms.captcha:
     post:
@@ -1022,7 +1022,7 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/WelfareConfirmItemSpecVO"
-          definitions: "商品规格"
+        description: "商品规格"
   WelfareConfirmItemSpecVO:
     type: "object"
     properties:
