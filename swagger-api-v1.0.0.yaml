@@ -3,10 +3,8 @@ info:
   description: "该api文档适用于开发抖音小程序，此文档中只包含服务端api部分，不涉及到任何小程序与抖音app交互的内容，测试环境：http://47.103.115.210:8090/dm/douyin.99fuliyun.com/"
   version: "1.0.0"
   title: "抖音小程序开发 - 服务端接口文档"
-  termsOfService: "http://47.103.115.210:8090/dm/douyin.99fuliyun.com/"
-  contact:
-    email: "kang.wu@ecminsheng.com"
-host: "petstore.swagger.io"
+host: "http://47.103.115.210:8090"
+basePath: "/dm/douyin.99fuliyun.com/",
 tags:
 - name: "登录"
   description: "登陆功能参考抖音文档开发完成"
