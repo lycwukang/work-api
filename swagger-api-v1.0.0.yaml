@@ -37,8 +37,10 @@ paths:
         schema:
           $ref: "#/definitions/WelfareSmsCaptchaRequestVO"
       responses:
-        202:
+        200:
           description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult"
   /api/byteDance.login.byOpenId:
     post:
       tags:
