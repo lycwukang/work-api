@@ -1,0 +1,1320 @@
+swagger: "2.0"
+info:
+  description: "该api文档适用于开发抖音小程序，此文档中只包含服务端api部分，不涉及到任何小程序与抖音app交互的内容，测试环境：https://test-api.99fuliyun.com/dm/douyin.99fuliyun.com/"
+  version: "1.0.0"
+  title: "抖音小程序开发 - 服务端接口文档"
+host: "test-api.99fuliyun.com"
+basePath: "/dm/douyin.99fuliyun.com/"
+tags:
+- name: "登录"
+  description: "登陆功能参考抖音文档开发完成"
+  externalDocs:
+    description: "查看抖音登陆部分的文档"
+    url: "https://developer.toutiao.com/dev/cn/mini-app/develop/server/log-in/code2session"
+- name: "商品"
+  description: ""
+- name: "用户"
+  description: ""
+- name: "订单"
+  description: ""
+- name: "区域"
+  description: ""
+schemes:
+- "http"
+- "https"
+paths:
+  /api/area.child.{id}:
+    get:
+      tags:
+      - "区域"
+      summary: "获取区域信息"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "区域编号，顶层区域编号为0"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«List«WelfareAreaVO»»"
+  /api/sms.captcha:
+    post:
+      tags:
+      - "登录"
+      summary: "发送登录验证码"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareSmsCaptchaRequestVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult"
+  /api/byteDance.login.byOpenId:
+    post:
+      tags:
+      - "登录"
+      summary: "通过抖音登录code进行商城用户的登录"
+      description: "抖音登录后可获取到用户的code（文档参考：https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/tt.login），服务端可以通过code获取到用户对于小程序的唯一编号openId，客户端通过openId可获取到用户的基本信息（文档参考：https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/user-information/tt.getuserinfo），此操作需要用户授权，当用户拒绝授权时无法获取到用户的昵称，头像等数据"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "通过抖音登录接口提供的code获取到用户的昵称，头像，性别后请求登录接口，当用户拒绝授权时，则不需要提供昵称，头像和性别"
+        required: true
+        schema:
+          $ref: "#/definitions/ByteDanceLoginModel"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareMemberSessionVO»"
+  /api/byteDance.member.phoneCheck:
+    post:
+      tags:
+      - "登录"
+      summary: "验证用户的手机号"
+      description: "验证码需要通过请求/api/sms.captcha获取"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户session"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/ByteDancePhoneCheckModel"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult"
+  /api/product.{id}.find:
+    get:
+      tags:
+      - "商品"
+      summary: "获取商品信息"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "商品编号"
+        required: true
+        type: "integer"
+      - name: "areaId"
+        in: "query"
+        description: "区域编号（非必填）"
+        required: false
+        type: "integer"
+      - name: "session"
+        in: "query"
+        description: "当用户登录时，把session传给服务端"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareProductVO»"
+  /api/cart.num.add:
+    post:
+      tags:
+      - "商品"
+      summary: "添加商品进购物车并返回购物车中商品数量（在商品页中使用）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "当用户登录时，把session传给服务端"
+        required: false
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareCartAddItemVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareCartNumVO»"
+  /api/cart.num:
+    get:
+      tags:
+      - "商品"
+      summary: "获取购物车商品数量（在商品页面使用）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "key"
+        in: "query"
+        description: "购物车编号"
+        required: false
+        type: "string"
+      - name: "session"
+        in: "query"
+        description: "当用户登录时，把session传给服务端"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareCartNumVO»"
+  /api/cart:
+    get:
+      tags:
+      - "商品"
+      summary: "获取购物车信息（在购物车页面使用）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "key"
+        in: "query"
+        description: "购物车编号"
+        required: false
+        type: "string"
+      - name: "session"
+        in: "query"
+        description: "当用户登录时，把session传给服务端"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareCartVO»"
+  /api/cart.add:
+    post:
+      tags:
+      - "商品"
+      summary: "修改商品数量（在购物车页面使用）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "当用户登录时，把session传给服务端"
+        required: false
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareCartAddItemVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareCartVO»"
+  /api/cart.remove:
+    post:
+      tags:
+      - "商品"
+      summary: "删除购物车中的商品（在购物车页面使用）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "当用户登录时，把session传给服务端"
+        required: false
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareCartRemoveItemVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareCartVO»"
+  /api/cart.checked:
+    post:
+      tags:
+      - "商品"
+      summary: "设置购物车商品的选中状态（在购物车页面使用）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "当用户登录时，把session传给服务端"
+        required: false
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareCartCheckedItemVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareCartVO»"
+  /api/confirm.load:
+    post:
+      tags:
+      - "商品"
+      summary: "加载准备下单的数据（在结算使用，需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareConfirmRequestVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareConfirmVO»"
+  /api/confirm.submit:
+    post:
+      tags:
+      - "商品"
+      summary: "下单（在结算使用，需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareConfirmRequestVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareConfirmSnVO»"
+  /api/order.list.{type}:
+    get:
+      tags:
+      - "订单"
+      summary: "订单列表（需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      - in: "path"
+        name: "type"
+        description: "查询订单的类型（all：全部订单，waitPaid：等待支付，waitDelivery：等待发货，waitReceive：等待收货）"
+        required: true
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "查询订单第几页的数据"
+        required: true
+        type: "integer"
+      - name: "size"
+        in: "query"
+        description: "每页订单数量"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareOrderSimplePageVO»"
+  /api/order.detail.{sn}:
+    get:
+      tags:
+      - "订单"
+      summary: "订单详情（需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      - in: "path"
+        name: "sn"
+        description: "订单编号"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareOrderVO»"
+  /api/order.cancel.{sn}:
+    post:
+      tags:
+      - "订单"
+      summary: "取消订单（需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      - in: "path"
+        name: "sn"
+        description: "订单编号"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult"
+  /api/receivers:
+    get:
+      tags:
+      - "用户"
+      summary: "查询用户所有收货地址（需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«List«WelfareReceiverVO»»"
+  /api/receiver.add:
+    post:
+      tags:
+      - "用户"
+      summary: "新增收货地址（在结算使用，需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareReceiverVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult"
+  /api/receiver.modify:
+    post:
+      tags:
+      - "用户"
+      summary: "修改收货地址（在结算使用，需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareReceiverVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult"
+  /api/receiver.remove:
+    post:
+      tags:
+      - "用户"
+      summary: "删除收货地址（在结算使用，需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "只需要填写id即可"
+        required: true
+        schema:
+          $ref: "#/definitions/WelfareReceiverVO"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult"
+  /api/account.panel:
+    get:
+      tags:
+      - "用户"
+      summary: "用户面板信息（需登录）"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "session"
+        in: "query"
+        description: "用户的session数据"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "请求成功"
+          schema:
+            $ref: "#/definitions/XApiResult«WelfareAccountPanelVO»"
+definitions:
+  XApiResult:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        type: "object"
+  XApiResult«WelfareMemberSessionVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareMemberSessionVO"
+  XApiResult«WelfareProductVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareProductVO"
+  XApiResult«WelfareCartNumVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareCartNumVO"
+  XApiResult«WelfareCartVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareCartVO"
+  XApiResult«WelfareConfirmVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareConfirmVO"
+  XApiResult«WelfareConfirmSnVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareConfirmSnVO"
+  XApiResult«WelfareOrderSimplePageVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareOrderSimplePageVO"
+  XApiResult«WelfareOrderVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareOrderVO"
+  XApiResult«List«WelfareReceiverVO»»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/List«WelfareReceiverVO»"
+  List«WelfareReceiverVO»:
+    type: "array"
+    items:
+      $ref: "#/definitions/WelfareReceiverVO"
+  List«WelfareAreaVO»:
+    type: "array"
+    items:
+      $ref: "#/definitions/WelfareAreaVO"
+  XApiResult«List«WelfareAreaVO»»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/List«WelfareAreaVO»"
+  XApiResult«WelfareAccountPanelVO»:
+    type: "object"
+    properties:
+      result:
+        type: "boolean"
+        description: "操作是否成功"
+      message:
+        type: "string"
+        description: "当result=false时，是请求失败的说明"
+      data:
+        $ref: "#/definitions/WelfareAccountPanelVO"
+  ByteDanceLoginModel:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "抖音用户code"
+      nickName:
+        type: "string"
+        description: "抖音用户昵称"
+      avatarUrl:
+        type: "string"
+        description: "抖音用户头像"
+      gender:
+        type: "integer"
+        format: "int32"
+        description: "性别 0男性，1女性"
+  WelfareMemberSessionVO:
+    type: "object"
+    properties:
+      session:
+        type: "string"
+        description: "用户身份凭据，客户端需持久保存（登录时请求）"
+      phoneChecked:
+        type: "boolean"
+        description: "用户是否已经通过了手机号验证，如果未通过，需要进行手机验证"
+  ByteDancePhoneCheckModel:
+    type: "object"
+    properties:
+      phone:
+        type: "string"
+        description: "手机号"
+      smsCaptcha:
+        type: "string"
+        description: "验证码"
+  WelfareProductVO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "商品编号"
+      name:
+        type: "string"
+        description: "商品名称"
+      memo:
+        type: "string"
+        description: "商品副标题"
+      saleVolume:
+        type: "integer"
+        format: "int32"
+        description: "销量"
+      images:
+        type: "array"
+        items:
+          type: "string"
+        description: "轮播图"
+      props:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareProductPropVO"
+        description: "商品规格信息"
+      exhibitions:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareProductExhibitionVO"
+        description: "详情信息，抖音只需要获取exhibitions[0].content即可"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareItemVO"
+        description: "商品所有的sku"
+  WelfareProductPropVO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "规格编号"
+      name:
+        type: "string"
+        description: "规格名称"
+      values:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareProductPropValueVO"
+        description: "规格值"
+  WelfareProductPropValueVO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "规格值编号"
+      name:
+        type: "string"
+        description: "规格值名称"
+  WelfareProductExhibitionVO:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "描述"
+      content:
+        type: "string"
+        description: "内容"
+  WelfareItemVO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "sku编号"
+      image:
+        type: "string"
+        description: "图片"
+      price:
+        type: "number"
+        format: "double"
+        description: "价格"
+      marketPrice:
+        type: "number"
+        format: "double"
+        description: "市场价"
+      sale:
+        type: "boolean"
+        description: "商品是否可在上架中"
+      receive:
+        type: "boolean"
+        description: "商品在此区域中，是否可配送"
+      stock:
+        type: "integer"
+        format: "int32"
+        description: "商品可售库存"
+      props:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareItemPropVO"
+        description: "sku规格信息"
+  WelfareItemPropVO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "规格编号"
+      name:
+        type: "string"
+        description: "规格名称"
+      valueId:
+        type: "integer"
+        format: "int64"
+        description: "规格值编号"
+      valueName:
+        type: "string"
+        description: "规格值名称"
+  WelfareCartAddItemVO:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+        description: "购物车key，如果key为空，服务器会创建一个新的购物车"
+      itemId:
+        type: "integer"
+        format: "int64"
+        description: "sku编号"
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "大于0增加数量，小于0减少数量，商品数量最小值是1"
+  WelfareCartNumVO:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+        description: "购物车key"
+      number:
+        type: "integer"
+        format: "int32"
+        description: "购物车中商品数量"
+  WelfareCartVO:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+        description: "购物车key"
+      number:
+        type: "integer"
+        format: "int32"
+        description: "被选中的商品总数"
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "购物车中所有商品的总数（包含非选中状态）"
+      checked:
+        type: "boolean"
+        description: "商品是否全部选中"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareCartItemVO"
+        description: "购物车中的商品信息"
+  WelfareCartItemVO:
+    type: "object"
+    properties:
+      itemId:
+        type: "integer"
+        format: "int64"
+        description: "sku编号"
+      name:
+        type: "string"
+        description: "商品名称"
+      image:
+        type: "string"
+        description: "商品图片"
+      propsStr:
+        type: "string"
+        description: "商品规格"
+      sale:
+        type: "string"
+        description: "上架状态"
+      stock:
+        type: "integer"
+        format: "int32"
+        description: "商品库存"
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "下单数量"
+      price:
+        type: "number"
+        format: "double"
+        description: "商品单价"
+      totalPrice:
+        type: "number"
+        format: "double"
+        description: "商品总价"
+      checked:
+        type: "boolean"
+        description: "是否选中"
+  WelfareCartRemoveItemVO:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+        description: "购物车key"
+      itemId:
+        type: "integer"
+        format: "int64"
+        description: "sku编号"
+  WelfareCartCheckedItemVO:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+        description: "购物车key"
+      checked:
+        type: "boolean"
+        description: "选中状态"
+      itemIds:
+        type: "array"
+        items:
+          type: "integer"
+          format: "int64"
+          description: "商品编号"
+  WelfareConfirmRequestVO:
+    type: "object"
+    properties:
+      receiverId:
+        type: "integer"
+        format: "int64"
+        description: "收货信息编号，可不传，默认会从用户收获地址中选择默认收货信息"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareConfirmRequestItemVO"
+        description: "下单商品"
+  WelfareConfirmRequestItemVO:
+    type: "object"
+    properties:
+      itemId:
+        type: "integer"
+        format: "int64"
+        description: "sku编号"
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "下单数量"
+  WelfareConfirmVO:
+    type: "object"
+    properties:
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareConfirmItemVO"
+        description: "下单商品"
+      receiver:
+        $ref: "#/definitions/WelfareConfirmReceiverVO"
+      price:
+        type: "number"
+        format: "double"
+        description: "商品总价"
+      fee:
+        type: "number"
+        format: "double"
+        description: "运费"
+      amount:
+        type: "number"
+        format: "double"
+        description: "结算金额（price + fee）"
+      messages:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareConfirmMessageVO"
+        description: "提示信息"
+      submit:
+        type: "boolean"
+        description: "是否可以进行下单，如果不可下单，通常是由于不满足某些下单条件（没有库存，商品下架，区域不可配送等）"
+  WelfareConfirmItemVO:
+    type: "object"
+    properties:
+      itemId:
+        type: "integer"
+        format: "int64"
+        description: "sku编号"
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "下单数量"
+      name:
+        type: "string"
+        description: "商品名称"
+      image:
+        type: "string"
+        description: "商品图片"
+      sale:
+        type: "string"
+        description: "上架状态"
+      stock:
+        type: "integer"
+        format: "int32"
+        description: "商品库存"
+      receive:
+        type: "boolean"
+        description: "商品是否可配送"
+      price:
+        type: "number"
+        format: "double"
+        description: "商品单价"
+      props:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareConfirmItemSpecVO"
+        description: "商品规格"
+  WelfareConfirmItemSpecVO:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "规格名称"
+      value:
+        type: "string"
+        description: "规格值"
+  WelfareConfirmReceiverVO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "收货地址编号"
+      areaId:
+        type: "integer"
+        format: "int64"
+        description: "区域编号，详情请查看/api/area.child.{id}"
+      areaName:
+        type: "integer"
+        format: "int64"
+        description: "区域全称"
+      address:
+        type: "string"
+        description: "详细地址（需用户自己填写部分）"
+      consignee:
+        type: "string"
+        description: "收件人姓名"
+      phone:
+        type: "string"
+        description: "联系电话"
+      defaulted:
+        type: "boolean"
+        description: "是否是用户的默认收货地址"
+  WelfareConfirmMessageVO:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        description: "当code=tip时，客户端需要给一个弹框，提示用户一些信息，关闭弹框后不影响后续流程"
+      message:
+        type: "string"
+        description: "提示信息"
+  WelfareConfirmSnVO:
+    type: "object"
+    properties:
+      sn:
+        type: "string"
+        description: "订单编号"
+  WelfareOrderSimplePageVO:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        format: "int32"
+        description: "页码"
+      size:
+        type: "integer"
+        format: "int32"
+        description: "数量"
+      total:
+        type: "integer"
+        format: "int32"
+        description: "总数量"
+      totalPage:
+        type: "integer"
+        format: "int32"
+        description: "总页数"
+      orders:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareOrderSimpleVO"
+        description: "订单信息"
+  WelfareOrderSimpleVO:
+    type: "object"
+    properties:
+      sn:
+        type: "string"
+        description: "订单编号"
+      createDate:
+        type: "string"
+        description: "订单创建时间，格式：yyyy-MM-dd HH:mm:ss"
+      orderStatus:
+        type: "string"
+        description: "订单状态描述"
+      amount:
+        type: "number"
+        format: "double"
+        description: "订单金额"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareOrderItemVO"
+        description: "订单商品信息"
+  WelfareOrderVO:
+    type: "object"
+    properties:
+      sn:
+        type: "string"
+        description: "订单编号"
+      createDate:
+        type: "string"
+        description: "订单创建时间，格式：yyyy-MM-dd HH:mm:ss"
+      orderStatus:
+        type: "string"
+        description: "订单状态描述"
+      amount:
+        type: "number"
+        format: "double"
+        description: "订单金额"
+      fee:
+        type: "number"
+        format: "double"
+        description: "运费"
+      areaName:
+        type: "integer"
+        format: "int64"
+        description: "区域全称"
+      address:
+        type: "string"
+        description: "详细地址（需用户自己填写部分）"
+      consignee:
+        type: "string"
+        description: "收件人姓名"
+      phone:
+        type: "string"
+        description: "联系电话"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareOrderItemVO"
+        description: "订单商品信息"
+      logistics:
+        type: "array"
+        items:
+          $ref: "#/definitions/WelfareOrderLogisticsVO"
+        description: "快递信息"
+      payAction:
+        type: "boolean"
+        description: "订单是否需要支付"
+      cancelAction:
+        type: "boolean"
+        description: "订单是否可以取消"
+  WelfareOrderItemVO:
+    type: "object"
+    properties:
+      itemId:
+        type: "integer"
+        format: "int64"
+        description: "sku编号"
+      image:
+        type: "string"
+        description: "图片"
+      name:
+        type: "string"
+        description: "商品名称"
+      memo:
+        type: "string"
+        description: "副标题"
+      propsStr:
+        type: "string"
+        description: "规格"
+      price:
+        type: "number"
+        format: "double"
+        description: "商品单价"
+      quantity:
+        type: "integer"
+        format: "int32"
+        description: "下单数量"
+  WelfareOrderLogisticsVO:
+    type: "object"
+    properties:
+      company:
+        type: "string"
+        description: "快递公司名称"
+      sn:
+        type: "string"
+        description: "快递单号"
+  WelfareReceiverVO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "收货地址编号"
+      areaId:
+        type: "integer"
+        format: "int64"
+        description: "区域编号，详情请查看/api/area.child.{id}"
+      areaName:
+        type: "integer"
+        format: "int64"
+        description: "区域全称"
+      address:
+        type: "string"
+        description: "详细地址（需用户自己填写部分）"
+      consignee:
+        type: "string"
+        description: "收件人姓名"
+      phone:
+        type: "string"
+        description: "联系电话"
+      defaulted:
+        type: "boolean"
+        description: "是否是用户的默认收货地址"
+  WelfareAccountPanelVO:
+    type: "object"
+    properties:
+      waitPaidOrderCount:
+        type: "integer"
+        format: "int32"
+        description: "待支付订单数量"
+      waitShippingOrderCount:
+        type: "integer"
+        format: "int32"
+        description: "待发货订单数量"
+      waitDeliveryOrderCount:
+        type: "integer"
+        format: "int32"
+        description: "待收货订单数量"
+      name:
+        type: "string"
+        description: "昵称"
+      avatar:
+        type: "string"
+        description: "头像"
+      phone:
+        type: "string"
+        description: "手机号"
+      gender:
+        type: "integer"
+        format: "int32"
+        description: "性别：0男 1女"
+  WelfareSmsCaptchaRequestVO:
+    type: "object"
+    properties:
+      phone:
+        type: "string"
+        description: "手机号"
+  WelfareAreaVO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+        description: "区域编号"
+      name:
+        type: "string"
+        description: "区域名称"
+      fullName:
+        type: "string"
+        description: "区域全称"
